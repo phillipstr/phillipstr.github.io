@@ -61,26 +61,43 @@ about_content: | # this will include new lines to allow paragraphs
     - Images ![alt text](/images/landscape-trees.jpg "Trees")
 
 content:
-  - title: Projects # Title for the section
-    layout: list # Type of content section (list/text)
+  - title: Presentations
+    layout: list
     content:
       - layout: left
-        border: weak  # Value of `weak` will display a weak border below this item. # Any
-                      # other value (or no value) means no border will be displayed
-        title: Project name
-        link: Link to project (eg. sproogen.github.io/modern-resume-theme)(optional)
-        link_text: Link Text
-        additional_links:
-          - title:  Github page for project (eg. sproogen/modern-resume-theme)
-            icon: fab fa-github
-            url: Link to project (eg. sproogen.github.io/modern-resume-theme)(optional)
-          - title:  Github page for project (eg. sproogen/modern-resume-theme)
-            icon: fab fa-github
-            url: Link to project (eg. sproogen.github.io/modern-resume-theme)(optional)
+        border: weak
+        title: Red Hat Summit 2023
+        quote: >
+          Lessons learned deploying Red Hat Ansible Automation Platform 2 in hardened cloud environments
+        description: |
+          Security-hardened cloud environments are common in defense, finance, healthcare, manufacturing, and other essential industries. But they pose challenges—including lack of internet access, hardened operating systems restrictions, and security restrictions—for deploying several of the new features of Ansible Automation Platform 2. In this session, we’ll explore tips, tricks, and lessons for resolving common challenges encountered in following the existing documentation, including recommendations for specific technical configurations for Amazon Web Services (AWS).
+      - layout: left
+        border: weak
+        title: Red Hat Summit 2022
         quote: >
           Short overview of the project (optional)
-        description: | # this will include new lines to allow paragraphs
+        description: |
           Description about the work on/with the project
+  # - title: Projects # Title for the section
+  #   layout: list # Type of content section (list/text)
+  #   content:
+  #     - layout: left
+  #       border: weak  # Value of `weak` will display a weak border below this item. # Any
+  #                     # other value (or no value) means no border will be displayed
+  #       title: Project name
+  #       link: Link to project (eg. sproogen.github.io/modern-resume-theme)(optional)
+  #       link_text: Link Text
+  #       additional_links:
+  #         - title:  Github page for project (eg. sproogen/modern-resume-theme)
+  #           icon: fab fa-github
+  #           url: Link to project (eg. sproogen.github.io/modern-resume-theme)(optional)
+  #         - title:  Github page for project (eg. sproogen/modern-resume-theme)
+  #           icon: fab fa-github
+  #           url: Link to project (eg. sproogen.github.io/modern-resume-theme)(optional)
+  #       quote: >
+  #         Short overview of the project (optional)
+  #       description: | # this will include new lines to allow paragraphs
+  #         Description about the work on/with the project
   - title: Experience
     layout: list
     content:
@@ -97,12 +114,12 @@ content:
     layout: list
     content:
       - layout: top-right
-        title: Institution name
-        sub_title: Qualifications (eg. BA Performing Arts)
-        caption: Date Range (eg. 2016 - 2019)
+        title: Virginia Tech
+        sub_title: Master of Information Technology
+        caption: May 2019 - May 2021
         quote: >
-          Short institution or course description (optional)
-        description: | # this will include new lines to allow paragraphs
+          [Degree Website](https://vtmit.vt.edu/about-us.html)
+        description: |
           Description of qualification
   - title: A Little More About Me
     layout: text
