@@ -22,6 +22,9 @@ concurrency:
 jobs:
   codeql:
     name: CodeQL (workflows)
+    # Dependabot PRs get a read-only token, so CodeQL cannot upload results and
+    # would show a false failure. It still runs on main after the PR merges.
+    if: github.actor != 'dependabot[bot]'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
