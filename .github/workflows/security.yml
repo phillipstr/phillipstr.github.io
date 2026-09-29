@@ -2,7 +2,7 @@ name: Security
 
 # There is no application code here, so the scans target what can go wrong:
 # the workflows themselves (CodeQL), committed secrets (gitleaks), and
-# dependency changes (dependency review, for Gemfile.lock).
+# dependency changes (dependency review, which covers the pinned actions).
 
 on:
   pull_request:

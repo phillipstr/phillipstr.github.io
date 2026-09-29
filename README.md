@@ -15,9 +15,9 @@ repo: **all content lives in `_config.yml`**, and the theme turns it into the pa
 | `index.md` | Just front matter (`layout: default`); the theme's layout renders the sections from `_config.yml` |
 | `assets/main.scss` | Imports the theme's styles; add CSS overrides here |
 | `images/` | Images referenced from `_config.yml` (profile photo, etc.) |
-| `Gemfile` / `Gemfile.lock` | Local preview only. GitHub Pages ignores them and uses its own gem set |
+| `Gemfile` | Local preview only. GitHub Pages ignores it and uses its own gem set. There is deliberately no committed `Gemfile.lock` (see [Previewing locally](#previewing-locally-windows)) |
 | `.github/workflows/` | CI, publish, security scans and link check (see [Automation](#automation-github-actions)) |
-| `.github/dependabot.yml` | Keeps the pinned actions and gems up to date |
+| `.github/dependabot.yml` | Keeps the pinned actions up to date |
 | `scripts/check-site.sh` | Sanity check on a built `_site`; CI runs it, and you can too |
 | `.yamllint.yml`, `.markdownlint.yaml` | Lint rules used by CI |
 
@@ -46,7 +46,7 @@ publishes it. To preview changes on your machine before pushing:
 2. From this folder:
 
    ```bash
-   bundle update
+   bundle install
    bundle exec jekyll serve
    ```
 
@@ -55,12 +55,13 @@ publishes it. To preview changes on your machine before pushing:
 The first build needs internet access to download the theme. Restart
 `jekyll serve` after editing `_config.yml`; other files reload on refresh.
 
-**Why `bundle update` the first time?** `Gemfile.lock` was generated in 2021
-and pins old native gems (`nokogiri 1.10`, `ffi 1.11`, ...) that will not
-install on a current Ruby. `bundle update` re-resolves to the current
-`github-pages` release. Commit the refreshed `Gemfile.lock` afterwards. (If
-you'd rather not install Ruby, Dependabot's first monthly gems PR does the same
-update for you; see [Dependency updates](#dependency-updates).)
+**Why is there no `Gemfile.lock`?** GitHub Pages ignores it and builds with its
+own gem set, so a committed lockfile can't affect the published site. The one
+this repo used to have was left over from the theme's own gemspec setup: it
+didn't match the `Gemfile`, pinned 2021-era gems that won't install on a current
+Ruby, made Dependabot fail, and produced dozens of security alerts for gems the
+site never used. `bundle install` now generates a fresh lockfile on your machine,
+and `.gitignore` keeps it out of the repo.
 
 If `wdm` fails to compile, delete its line from the `Gemfile`. It only speeds
 up file watching.
@@ -71,10 +72,10 @@ up file watching.
 | --- | --- | --- |
 | `ci.yml` | PRs, pushes to `main` | **Lint**: yamllint (`_config.yml`, workflows), markdownlint (README), actionlint (workflow syntax). **Build**: Jekyll build with GitHub's own Pages builder, then `scripts/check-site.sh` (fails if the theme silently didn't apply). Uploads the built site as an artifact |
 | `pages.yml` | pushes to `main`, manual | Builds, runs the same sanity check, and **publishes** to GitHub Pages. This is the only workflow that publishes, and both its jobs are skipped on any ref other than `main`, even when started manually |
-| `security.yml` | PRs, pushes to `main`, weekly | **CodeQL** on the workflow files, **gitleaks** secret scan over full history, and **dependency review** of `Gemfile.lock` changes on PRs (fails on high severity) |
+| `security.yml` | PRs, pushes to `main`, weekly | **CodeQL** on the workflow files, **gitleaks** secret scan over full history, and **dependency review** of dependency changes on PRs, i.e. the pinned actions (fails on high severity) |
 | `links.yml` | weekly, manual | Builds the site and checks every link and image, including external ones |
 | `dependabot-auto-merge.yml` | Dependabot PRs | Turns on auto-merge for the safe update PRs (see [Dependency updates](#dependency-updates)) |
-| Dependabot | weekly (actions), monthly (gems) | Opens PRs to update pinned actions and gems |
+| Dependabot | weekly | Opens PRs to update the pinned actions |
 
 Every action is pinned to a full commit SHA with the version in a trailing
 comment. Dependabot updates both together.
@@ -88,7 +89,6 @@ The aim is that this repo needs no routine attention. Dependabot (`.github/depen
 | Update | What happens |
 | --- | --- |
 | Actions, minor and patch (one grouped PR, weekly) | Auto-merged when checks pass |
-| Gems in `Gemfile.lock` (one grouped PR, monthly) | Auto-merged when checks pass. Local preview only, so it can't break the published site |
 | Actions, **major** | Separate PR that waits for you: a new major can change an action's inputs |
 | Any PR with a failing check, or with commits pushed by a human | Not merged. It sits open and GitHub notifies you |
 
@@ -116,12 +116,8 @@ settings has been switched back.
 6. **Dependency graph / Dependabot alerts (required):** turn on *Settings → Code security → Dependabot alerts* (this also enables the dependency graph). The `Dependency review` check, which item 4 requires, fails with "Dependency review is not supported on this repository" without it. Also worth turning on, free on public repos: **Dependabot security updates**, **Secret scanning** and **Push protection**.
 
 Dependabot and the auto-merge workflow read their config from `main`, so
-nothing in [Dependency updates](#dependency-updates) starts until this branch is
-merged.
-
-Note that `Gemfile.lock` is stale, so GitHub will show Dependabot alerts for its
-old gems until the first gems PR merges (or you run `bundle update` and commit
-the result). This does not affect the published site.
+changes to [Dependency updates](#dependency-updates) only take effect once
+merged there.
 
 ## Notes
 

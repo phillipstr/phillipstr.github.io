@@ -4,8 +4,12 @@ version: 2
 # dependabot-auto-merge.yml merges the safe ones once the required checks pass
 # (see the README for the one-time repo settings that needs).
 #
-# NOTE: Dependabot only reads this file from the default branch, so nothing
-# happens until it is merged to main.
+# Only GitHub Actions are tracked. There is deliberately no `bundler` entry and
+# no committed Gemfile.lock: GitHub Pages ignores the lockfile and builds with
+# its own gem set, so tracking it could not affect the published site and only
+# produced dependency alerts and PR churn.
+#
+# NOTE: Dependabot only reads this file from the default branch.
 
 updates:
   # Keeps the SHA-pinned actions in .github/workflows/ current. Dependabot
@@ -26,17 +30,3 @@ updates:
       actions:
         patterns: ["*"]
         update-types: [minor, patch]
-
-  # Only affects local preview: GitHub Pages ignores Gemfile.lock and builds
-  # with its own gem set, so a bad bump can't break the published site. That is
-  # why every gem update, including "major" ones, is allowed to auto-merge
-  # (github-pages uses whole-number versions, so each release looks major).
-  - package-ecosystem: bundler
-    directory: /
-    schedule:
-      interval: monthly
-    cooldown:
-      default-days: 7
-    groups:
-      gems:
-        patterns: ["*"]
