@@ -1,0 +1,44 @@
+name: Dependabot auto-merge
+
+# Turns on auto-merge for Dependabot PRs. GitHub then merges each PR by itself
+# once the required status checks pass; it does not merge anything that is red.
+#
+# Qualifies: minor/patch action updates, and all gem updates (Gemfile.lock is
+# local-preview only, so it cannot affect the published site).
+# Left for a human: major action updates.
+#
+# Why pull_request_target: Dependabot's plain pull_request runs get a read-only
+# token that cannot enable auto-merge. This is safe ONLY because the workflow
+# never checks out or executes code from the PR. Keep it that way: do not add
+# an actions/checkout step here.
+
+on: pull_request_target
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    name: Enable auto-merge
+    if: github.event.pull_request.user.login == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      # Also verifies the PR contains only Dependabot's own commits. If someone
+      # has pushed to it, the outputs below come back empty and nothing merges.
+      - name: Read Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@25dd0e34f4fe68f24cc83900b1fe3fe149efef98 # v3.1.0
+
+      # Each condition needs a positive match, so an empty or unknown value
+      # fails closed instead of merging.
+      - name: Enable auto-merge (squash)
+        if: >-
+          steps.metadata.outputs.package-ecosystem == 'bundler' ||
+          steps.metadata.outputs.update-type == 'version-update:semver-minor' ||
+          steps.metadata.outputs.update-type == 'version-update:semver-patch'
+        run: gh pr merge --auto --squash "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ github.token }}

@@ -1,0 +1,48 @@
+name: Link check
+
+# Builds the site and checks every link and image in the output. Runs weekly
+# and on demand rather than on PRs: external sites go down or rate-limit, and
+# that shouldn't block unrelated changes.
+
+on:
+  schedule:
+    - cron: "43 7 * * 1" # Mondays 07:43 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  links:
+    name: Check links
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Build with Jekyll
+        uses: actions/jekyll-build-pages@44a6e6beabd48582f863aeeb6cb2151cc1716697 # v1.0.13
+        with:
+          source: ./
+          destination: ./_site
+
+      # --root-dir resolves root-relative links (/assets/main.css) against the
+      # built site. LinkedIn returns 999 to bots, and the site's own canonical
+      # URL is excluded so a not-yet-published site doesn't fail its own check.
+      - name: Check links
+        uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
+        with:
+          args: >-
+            --no-progress
+            --max-retries 3
+            --retry-wait-time 10
+            --timeout 30
+            --accept '200..=299,429'
+            --root-dir ${{ github.workspace }}/_site
+            --exclude 'linkedin\.com'
+            --exclude '^https://phillipstr\.github\.io'
+            './_site/**/*.html'
+          fail: true

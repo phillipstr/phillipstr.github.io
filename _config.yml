@@ -8,7 +8,7 @@ version: 2
 # Personal info
 name: Trey Phillips
 title: Cloud & Automation Engineer
-email: phillipstreydev@gmail.com
+email: inquiries@trphil.com
 # email_title: Email (Email title override)
 # phone: Your phone number (optional)
 # phone_title: Phone (Phone title override)
@@ -20,7 +20,7 @@ darkmode: true
 
 # Social links
 # twitter_username: jekyllrb
-github_username:  phillipstr
+github_username: phillipstr
 # stackoverflow_username: "00000001"
 # dribbble_username: jekyll
 # facebook_username: jekyll
@@ -50,15 +50,12 @@ linkedin_username: trey-phillips-9894b28a
 
 # About Section
 # about_title: About Me (Use this to override about section title)
-about_profile_image: Directory of profile image (eg. images/profile.jpg)
-about_content: | # this will include new lines to allow paragraphs
-  Write an awesome description about yourself here, this supports markdown, so you can add [links](http://foobar.com) and highlight things <mark>like this</mark>.
-
-  You can even add paragraphs by using empty lines like this and add anything else [markdown](https://www.markdownguide.org/getting-started#what-is-markdown) supports such as
-    - Lists
-    - Tables
-    - <a href="google.com">Links</a>
-    - Images ![alt text](/images/landscape-trees.jpg "Trees")
+# TODO: add a profile photo. Drop the file in images/ and uncomment, e.g.
+# about_profile_image: images/profile.jpg
+# TODO: rewrite this in your own words. It's a placeholder drafted only from
+# the facts already in this file. Supports markdown.
+about_content: |
+  Cloud & Automation Engineer. Presented at Red Hat Summit 2023 on deploying Ansible Automation Platform 2 in security-hardened AWS environments. Master of Information Technology, Virginia Tech (2019–2021).
 
 content:
   - title: Presentations
@@ -71,13 +68,14 @@ content:
           Lessons learned deploying Red Hat Ansible Automation Platform 2 in hardened cloud environments
         description: |
           Security-hardened cloud environments are common in defense, finance, healthcare, manufacturing, and other essential industries. But they pose challenges—including lack of internet access, hardened operating systems restrictions, and security restrictions—for deploying several of the new features of Ansible Automation Platform 2. In this session, we’ll explore tips, tricks, and lessons for resolving common challenges encountered in following the existing documentation, including recommendations for specific technical configurations for Amazon Web Services (AWS).
-      - layout: left
-        border: weak
-        title: Red Hat Summit 2022
-        quote: >
-          Short overview of the project (optional)
-        description: |
-          Description about the work on/with the project
+      # TODO: add other talks here (e.g. Red Hat Summit 2022), or delete this note.
+      # - layout: left
+      #   border: weak
+      #   title: Talk or event name
+      #   quote: >
+      #     One-line summary (optional)
+      #   description: |
+      #     What the talk covered
   # - title: Projects # Title for the section
   #   layout: list # Type of content section (list/text)
   #   content:
@@ -98,18 +96,20 @@ content:
   #         Short overview of the project (optional)
   #       description: | # this will include new lines to allow paragraphs
   #         Description about the work on/with the project
-  - title: Experience
-    layout: list
-    content:
-      - layout: right
-        title: Company name
-        sub_title: Job title
-        caption: Date Range (eg. November 2016 - present)
-        link: Link to company (optional)
-        quote: >
-          Short description of the company (optional)
-        description: | # this will include new lines to allow paragraphs
-          Description of role
+  # TODO: fill in Experience (this is the main section of a resume), then
+  # uncomment. Add one "- layout: right" entry per role, newest first.
+  # - title: Experience
+  #   layout: list
+  #   content:
+  #     - layout: right
+  #       title: Company name
+  #       sub_title: Job title
+  #       caption: Date Range (eg. November 2016 - present)
+  #       link: Link to company (optional)
+  #       quote: >
+  #         Short description of the company (optional)
+  #       description: | # this will include new lines to allow paragraphs
+  #         Description of role
   - title: Education
     layout: list
     content:
@@ -119,39 +119,44 @@ content:
         caption: May 2019 - May 2021
         quote: >
           [Degree Website](https://vtmit.vt.edu/about-us.html)
-        description: |
-          Description of qualification
-  - title: A Little More About Me
-    layout: text
-    content: | # this will include new lines to allow paragraphs
-      This is where you can write a little more about yourself. You could title this section **Interests** and include some of your other interests.
-
-      Or you could title it **Skills** and write a bit more about things that make you more desirable, like *leadership* or *teamwork*
+        # TODO (optional): add a description of the program / focus area.
+        # description: |
+        #   ...
+  # TODO (optional): a free-form section, e.g. Skills or Interests. Uncomment
+  # and edit, or delete.
+  # - title: Skills
+  #   layout: text
+  #   content: | # this will include new lines to allow paragraphs
+  #     Markdown text goes here.
 
 # Footer
 footer_show_references: true
 # references_title: References on request (Override references text)
 
 # Build settings
-# theme: modern-resume-theme (Use this is you are hosting your resume yourself)
-# remote_theme: sproogen/modern-resume-theme (Use this if you are hosting your resume on GitHub)
+# The theme's layouts, includes, styles and favicon are NOT stored in this repo.
+# They are pulled from GitHub at build time (GitHub Pages does this natively;
+# locally it needs network access). To pin a version, use e.g.
+# remote_theme: sproogen/modern-resume-theme@<tag-or-commit>
+remote_theme: sproogen/modern-resume-theme
 
 sass:
   sass_dir: _sass
   style: compressed
 
 plugins:
- - jekyll-seo-tag
+  - jekyll-seo-tag
+  - jekyll-remote-theme
 
-exclude : [
-  "Gemfile",
-  "Gemfile.lock",
-  "node_modules",
-  "vendor/bundle/",
-  "vendor/cache/",
-  "vendor/gems/",
-  "vendor/ruby/",
-  "lib/",
-  "scripts/",
-  "docker-compose.yml",
-  ]
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
+  - lib/
+  - scripts/
+  - docker-compose.yml

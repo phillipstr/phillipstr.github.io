@@ -1,0 +1,4 @@
+default: true
+
+# Prose paragraphs and tables are written as long lines, not hard-wrapped.
+MD013: false

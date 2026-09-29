@@ -1,0 +1,42 @@
+version: 2
+
+# Goal: no routine upkeep. Dependabot opens the PRs, CI checks them, and
+# dependabot-auto-merge.yml merges the safe ones once the required checks pass
+# (see the README for the one-time repo settings that needs).
+#
+# NOTE: Dependabot only reads this file from the default branch, so nothing
+# happens until it is merged to main.
+
+updates:
+  # Keeps the SHA-pinned actions in .github/workflows/ current. Dependabot
+  # rewrites both the commit SHA and the "# vX.Y.Z" comment beside it.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    # Since these merge unattended, don't take a release the day it ships: give
+    # the community time to spot a compromised or broken one. Security updates
+    # ignore the cooldown.
+    cooldown:
+      default-days: 7
+    groups:
+      # Minor and patch bumps share one PR, which auto-merges. Major bumps are
+      # deliberately left out of the group: they arrive as separate PRs and
+      # wait for a human, because a new major can change an action's inputs.
+      actions:
+        patterns: ["*"]
+        update-types: [minor, patch]
+
+  # Only affects local preview: GitHub Pages ignores Gemfile.lock and builds
+  # with its own gem set, so a bad bump can't break the published site. That is
+  # why every gem update, including "major" ones, is allowed to auto-merge
+  # (github-pages uses whole-number versions, so each release looks major).
+  - package-ecosystem: bundler
+    directory: /
+    schedule:
+      interval: monthly
+    cooldown:
+      default-days: 7
+    groups:
+      gems:
+        patterns: ["*"]

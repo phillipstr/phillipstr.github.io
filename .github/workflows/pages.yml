@@ -1,0 +1,69 @@
+name: Publish
+
+# Builds the site and deploys it to GitHub Pages on every push to main.
+# This is the ONLY workflow that publishes, and only from main: the manual
+# trigger can be started from any branch, so both jobs are also guarded on the
+# ref and are skipped anywhere else.
+#
+# One-time setup: Settings -> Pages -> Build and deployment -> Source must be
+# "GitHub Actions" (not "Deploy from a branch"), or the deploy job will fail.
+# Also restrict the github-pages environment to main (see README), since a
+# branch can edit this file's `if:` guards but not that setting.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Let an in-flight deployment finish rather than cancelling it half way, but
+# only keep the latest queued run.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Build with Jekyll
+        uses: actions/jekyll-build-pages@44a6e6beabd48582f863aeeb6cb2151cc1716697 # v1.0.13
+        with:
+          source: ./
+          destination: ./_site
+
+      # Refuse to publish a build where the theme silently failed to apply.
+      - name: Sanity-check output
+        run: bash scripts/check-site.sh _site
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: _site
+
+  deploy:
+    name: Deploy
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
