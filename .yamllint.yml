@@ -1,0 +1,22 @@
+extends: default
+
+ignore: |
+  _site/
+  vendor/
+  .bundle/
+
+rules:
+  # _config.yml holds long prose (talk abstracts, bio), so a length cap is noise.
+  line-length: disable
+  # Not needed for Jekyll config or workflow files.
+  document-start: disable
+  # GitHub workflows use a bare `on:` key, which YAML 1.1 reads as a boolean.
+  truthy:
+    check-keys: false
+  # One space before a trailing comment, which is how Dependabot writes the
+  # "# vX.Y.Z" note beside a SHA-pinned action.
+  comments:
+    min-spaces-from-content: 1
+  # _config.yml keeps commented-out templates at the indent of the item they
+  # would replace, which is not the indent of the surrounding keys.
+  comments-indentation: disable

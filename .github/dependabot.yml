@@ -1,0 +1,22 @@
+version: 2
+
+updates:
+  # Keeps the SHA-pinned actions in .github/workflows/ current. Dependabot
+  # rewrites both the commit SHA and the "# vX.Y.Z" comment beside it.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ["*"]
+
+  # Only affects local preview: GitHub Pages ignores Gemfile.lock and builds
+  # with its own gem set. Monthly to keep the noise down.
+  - package-ecosystem: bundler
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      gems:
+        patterns: ["*"]
