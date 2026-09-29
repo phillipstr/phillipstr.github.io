@@ -3,8 +3,7 @@ name: Dependabot auto-merge
 # Turns on auto-merge for Dependabot PRs. GitHub then merges each PR by itself
 # once the required status checks pass; it does not merge anything that is red.
 #
-# Qualifies: minor/patch action updates, and all gem updates (Gemfile.lock is
-# local-preview only, so it cannot affect the published site).
+# Qualifies: minor/patch action updates.
 # Left for a human: major action updates.
 #
 # Why pull_request_target: Dependabot's plain pull_request runs get a read-only
@@ -35,7 +34,6 @@ jobs:
       # fails closed instead of merging.
       - name: Enable auto-merge (squash)
         if: >-
-          steps.metadata.outputs.package-ecosystem == 'bundler' ||
           steps.metadata.outputs.update-type == 'version-update:semver-minor' ||
           steps.metadata.outputs.update-type == 'version-update:semver-patch'
         run: gh pr merge --auto --squash "$PR_URL"
