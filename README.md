@@ -103,14 +103,17 @@ theme (`remote_theme`) is unpinned, so it follows the upstream default branch.
 
 ### One-time GitHub setup
 
-These are repo settings that a workflow file cannot change:
+These are repo settings that a workflow file cannot change. Status for
+this repo as of 2026-09-29: all of them are done (via the `gh` CLI) and item 5
+does not apply. Use this list if you ever recreate the repo or find one of these
+settings has been switched back.
 
 1. **Settings → Pages → Build and deployment → Source: GitHub Actions.** Required for `pages.yml`. Until you switch it, the deploy job fails. Switching it before the first Publish run leaves the site unpublished until that run finishes.
-2. **Restrict publishing to `main`:** *Settings → Environments → github-pages → Deployment branches and tags → Selected branches and tags*, then add `main`. The `if:` guards in `pages.yml` are only a convenience: a branch can edit its own copy of the workflow, but it cannot change this setting, so this is what actually stops a non-`main` deploy. GitHub usually creates the environment with this restriction already, but check. The environment exists only after the first Publish run (or once you create it by hand).
+2. **Restrict publishing to `main`:** *Settings → Environments → github-pages → Deployment branches and tags → Selected branches and tags*, then add `main`. The `if:` guards in `pages.yml` are only a convenience: a branch can edit its own copy of the workflow, but it cannot change this setting, so this is what actually stops a non-`main` deploy. GitHub usually creates the environment with this restriction already; on this repo it was already limited to `main`. The environment exists only after the first Publish run (or once you create it by hand).
 3. **Allow auto-merge:** *Settings → General → Pull Requests → Allow auto-merge*. Without it, `dependabot-auto-merge.yml` fails when it tries to enable auto-merge.
 4. **Require checks on `main`:** *Settings → Rules → Rulesets → New branch ruleset*, target the default branch, and turn on **Require status checks to pass** with these four checks: `Lint`, `Build site`, `Secret scan`, `Dependency review`. Do **not** require approvals, or every Dependabot PR will wait for you. This step is what makes auto-merge safe: GitHub only merges once these pass. Two things to know: the checks only appear in the picker after they have run once (open a PR first), and status checks apply to *everything* merged into `main`, so add yourself as a bypass actor if you want to keep pushing to `main` directly. CodeQL is deliberately not required: it can't upload results on Dependabot PRs (read-only token), so it is skipped there.
 5. **CodeQL:** if *Settings → Code security → CodeQL analysis* is set to **Default setup**, it conflicts with the CodeQL job in `security.yml`. Either switch it to *Advanced* or delete that job.
-6. Optional, and free on public repos: turn on **Dependabot alerts** and **Secret scanning → Push protection**.
+6. **Dependency graph / Dependabot alerts (required):** turn on *Settings → Code security → Dependabot alerts* (this also enables the dependency graph). The `Dependency review` check, which item 4 requires, fails with "Dependency review is not supported on this repository" without it. Also worth turning on, free on public repos: **Dependabot security updates**, **Secret scanning** and **Push protection**.
 
 Dependabot and the auto-merge workflow read their config from `main`, so
 nothing in [Dependency updates](#dependency-updates) starts until this branch is
