@@ -1,9 +1,6 @@
 ---
-#
-# By default, content added below the "---" mark will appear in the home page
-# between the top bar and the list of recent posts.
-# To change the home page layout, edit the _layouts/default.html file.
-# See: https://jekyllrb.com/docs/themes/#overriding-theme-defaults
-#
+# The page itself is intentionally empty: the layout comes from the remote theme
+# (see `remote_theme` in _config.yml) and renders the About / content sections
+# defined in _config.yml. Edit that file to change what appears on the site.
 layout: default
 ---
